@@ -1,17 +1,16 @@
 #include <Arduino.h>
-#include <Servo.h>
 
 #include "Pins.h"
 #include "Motors.h"
 #include "LineSensors.h"
 #include "States.h"
 
+// Hardware objects
 Motors motors;
 LineSensors line;
 States states;
 
-Servo myServo;
-
+// Robot modes
 enum RunMode {
     fightMode,
     startMode,
@@ -23,6 +22,7 @@ void setup() {
 
     Serial.begin(9600);
 
+    // Initialize hardware
     motors.setup();
     line.setup();
 
@@ -30,19 +30,18 @@ void setup() {
     pinMode(DIP1, INPUT);
     pinMode(DIP2, INPUT);
 
-    myServo.attach(SERVO_PIN);
-    myServo.write(10);
+    // Wait for competition start signal
+    while(!digitalRead(StartMod)) {}
 
-    while(!digitalRead(StartMod)){}
+    // Competition delay
     delay(5000);
 }
 
 void loop() {
 
-    myServo.write(80);
-
     RunMode mode;
 
+    // Determine mode using DIP switches
     if(analogRead(DIP1) > 500 && analogRead(DIP2) > 500)
         mode = fightMode;
 
@@ -55,18 +54,19 @@ void loop() {
     else
         mode = stopMode;
 
+    // Execute behavior
     switch(mode) {
 
         case fightMode:
-            states.fight(motors,line);
+            states.fight(motors, line);
             break;
 
         case startMode:
-            states.start(motors,line);
+            states.start(motors, line);
             break;
 
         case blindMode:
-            states.blindSearch(motors,line);
+            states.blindSearch(motors, line);
             break;
 
         case stopMode:
