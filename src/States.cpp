@@ -7,6 +7,27 @@
 #define RAMP_STEPS     3
 #define RAMP_DELAY_MS  4
 
+void States::defaultState(Motors &motors, LineSensors &line, int LSideRead, int RSideRead, int LFrontRead, int RFrontRead, int LLine, int RLine) {
+
+    // Blind Searching
+    if (LLine || RLine) {
+        // You are blind
+        // DO hex state
+    }
+
+    if (LFrontRead || RFrontRead) {
+        motors.forward(255);
+    }
+
+    if (LSideRead) {
+        motors.turnLeft(200);
+    }
+
+    if (RSideRead) {
+        motors.turnRight(200);
+    }
+}
+
 void States::fight(Motors &motors, LineSensors &line) {
 
     if(line.rightLine()) { line.lineRight(motors); return; }
@@ -51,7 +72,7 @@ void States::fight(Motors &motors, LineSensors &line) {
         return;
     }
 
-    motors.forward(53);
+    motors.forward(80); //90
 }
 
 void States::start(Motors &motors, LineSensors &line) {
@@ -146,18 +167,18 @@ void States::blindSearch(Motors &motors, LineSensors &line) {
         return;
     }
 
-    hexagonSearch(motors);
+    hexagonSearch(motors, line);
 }
 
-void States::hexagonSearch(Motors &motors) {
+
+void States::hexagonSearch(Motors &motors, LineSensors &line) {
 
     if(hexState == HEX_FORWARD) {
 
-        motors.forward(120);
+        motors.forward(60);
 
-        if(millis() - hexTimer > HEX_EDGE_TIME) {
+        if(analogRead(LINE_LEFT) < 100 || analogRead(LINE_RIGHT) < 100) {
             motors.stop();
-            hexTimer = millis();
             hexState = HEX_TURN;
         }
 
@@ -165,13 +186,36 @@ void States::hexagonSearch(Motors &motors) {
 
         motors.rotateRight(200);
 
-        if(millis() - hexTimer > HEX_TURN_TIME) {
+        if(analogRead(LINE_LEFT) > 100 && analogRead(LINE_RIGHT) > 100) {
             motors.stop();
-            hexTimer = millis();
             hexState = HEX_FORWARD;
         }
     }
 }
+
+// void States::hexagonSearch(Motors &motors) {
+
+//     if(hexState == HEX_FORWARD) {
+
+//         motors.forward(120);
+
+//         if(millis() - hexTimer > HEX_EDGE_TIME) {
+//             motors.stop();
+//             hexTimer = millis();
+//             hexState = HEX_TURN;
+//         }
+
+//     } else {
+
+//         motors.rotateRight(200);
+
+//         if(millis() - hexTimer > HEX_TURN_TIME) {
+//             motors.stop();
+//             hexTimer = millis();
+//             hexState = HEX_FORWARD;
+//         }
+//     }
+// }
 
 void States::rampForward(Motors &motors, double targetSpeed) {
 

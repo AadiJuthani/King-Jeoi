@@ -27,50 +27,74 @@ void setup() {
     line.setup();
 
     pinMode(StartMod, INPUT);
-    pinMode(DIP1, INPUT);
-    pinMode(DIP2, INPUT);
+    pinMode(LSensor, INPUT);
+    pinMode(RSensor, INPUT);
 
-    // Wait for competition start signal
     while(!digitalRead(StartMod)) {}
 
     // Competition delay
-    delay(5000);
+    delay(2000); //Make 5000
 }
 
 void loop() {
 
-    RunMode mode;
+    //Reading Sensors
+    int LSideRead = digitalRead(Lside);
+    int RSideRead = digitalRead(RSide);
+    int LFrontRead = digitalRead(LSensor);
+    int RFrontRead = digitalRead(RSensor);
+    int LLine = line.leftLine();
+    int RLine = line.rightLine();
 
-    // Determine mode using DIP switches
-    if(analogRead(DIP1) > 500 && analogRead(DIP2) > 500)
-        mode = fightMode;
-
-    else if(analogRead(DIP1) < 500 && analogRead(DIP2) < 500)
-        mode = startMode;
-
-    else if(analogRead(DIP1) < 500 && analogRead(DIP2) > 500)
-        mode = blindMode;
-
-    else
-        mode = stopMode;
-
-    // Execute behavior
-    switch(mode) {
-
-        case fightMode:
-            states.fight(motors, line);
-            break;
-
-        case startMode:
-            states.start(motors, line);
-            break;
-
-        case blindMode:
-            states.blindSearch(motors, line);
-            break;
-
-        case stopMode:
-            motors.stop();
-            break;
+    if (digitalRead(StartMod)) {
+        states.defaultState(motors, line, LSideRead, RSideRead, LFrontRead, RFrontRead, LLine, RLine);
+    } else {
+        motors.forward(0);
     }
 }
+
+
+
+    // if (line.leftLine()) {
+    //     line.lineLeft(motors);   // <--- call the method, pass your Motors object
+    // } else if (line.rightLine()) {
+    //     line.lineRight(motors);
+    // } else {
+    //     motors.forward(70);      // use Motors API directly
+    // }
+    // } else {
+    //     motors.forward(0);
+    // }
+    // RunMode mode;
+//     if(analogRead(LSensor) > 500 && analogRead(RSensor) > 500)
+//         mode = fightMode;
+
+//     else if(analogRead(LSensor) < 500 && analogRead(RSensor) < 500)
+//         mode = startMode;
+
+//     else if(analogRead(LSensor) < 500 && analogRead(RSensor) > 500)
+//         mode = blindMode;
+
+//     else
+//         mode = stopMode;
+
+//     // Execute behavior
+//     switch(mode) {
+
+//         case fightMode:
+//             states.fight(motors, line);
+//             break;
+
+//         case startMode:
+//             states.start(motors, line);
+//             break;
+
+//         case blindMode:
+//             states.blindSearch(motors, line);
+//             break;
+
+//         case stopMode:
+//             motors.stop();
+//             break;
+//     }
+// }

@@ -2,8 +2,8 @@
 #include "Pins.h"
 
 void LineSensors::setup() {
-    pinMode(A0_LEFT, INPUT);
-    pinMode(A1_RIGHT, INPUT);
+    pinMode(LINE_LEFT, INPUT);
+    pinMode(LINE_RIGHT, INPUT);
 
     pinMode(LSensor, INPUT);
     pinMode(RSensor, INPUT);
@@ -14,17 +14,17 @@ void LineSensors::setup() {
 }
 
 bool LineSensors::leftLine() {
-    return analogRead(A1_RIGHT) < 100;
+    return analogRead(LINE_RIGHT) < 100;
 }
 
 bool LineSensors::rightLine() {
-    return analogRead(A0_LEFT) < 100;
+    return analogRead(LINE_LEFT) < 100;
 }
 
 void LineSensors::lineRight(Motors &motors) {
     motors.back(140);
     delay(180);
-    motors.rotateRight(130);
+    motors.rotateLeft(130);
     delay(100);
     motors.stop();
 }
