@@ -9,8 +9,8 @@
 // Opponent sensors
 #define LSensor 2
 #define RSensor 7
-#define Lside 8
-#define Rside 4
+#define Lside 4
+#define Rside 8
 
 // Edge sensors
 #define LINE_LEFT A0

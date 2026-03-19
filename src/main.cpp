@@ -40,7 +40,7 @@ void loop() {
 
     //Reading Sensors
     int LSideRead = digitalRead(Lside);
-    int RSideRead = digitalRead(RSide);
+    int RSideRead = digitalRead(Rside);
     int LFrontRead = digitalRead(LSensor);
     int RFrontRead = digitalRead(RSensor);
     int LLine = line.leftLine();
@@ -52,49 +52,3 @@ void loop() {
         motors.forward(0);
     }
 }
-
-
-
-    // if (line.leftLine()) {
-    //     line.lineLeft(motors);   // <--- call the method, pass your Motors object
-    // } else if (line.rightLine()) {
-    //     line.lineRight(motors);
-    // } else {
-    //     motors.forward(70);      // use Motors API directly
-    // }
-    // } else {
-    //     motors.forward(0);
-    // }
-    // RunMode mode;
-//     if(analogRead(LSensor) > 500 && analogRead(RSensor) > 500)
-//         mode = fightMode;
-
-//     else if(analogRead(LSensor) < 500 && analogRead(RSensor) < 500)
-//         mode = startMode;
-
-//     else if(analogRead(LSensor) < 500 && analogRead(RSensor) > 500)
-//         mode = blindMode;
-
-//     else
-//         mode = stopMode;
-
-//     // Execute behavior
-//     switch(mode) {
-
-//         case fightMode:
-//             states.fight(motors, line);
-//             break;
-
-//         case startMode:
-//             states.start(motors, line);
-//             break;
-
-//         case blindMode:
-//             states.blindSearch(motors, line);
-//             break;
-
-//         case stopMode:
-//             motors.stop();
-//             break;
-//     }
-// }

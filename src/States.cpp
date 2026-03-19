@@ -7,169 +7,80 @@
 #define RAMP_STEPS     3
 #define RAMP_DELAY_MS  4
 
-void States::defaultState(Motors &motors, LineSensors &line, int LSideRead, int RSideRead, int LFrontRead, int RFrontRead, int LLine, int RLine) {
+void States::defaultState(Motors &motors, LineSensors &line,
+                          int LSideRead, int RSideRead,
+                          int LFrontRead, int RFrontRead,
+                          int LLine, int RLine) {
 
-    // Blind Searching
-    if (LLine || RLine) {
-        // You are blind
-        // DO hex state
-    }
-
-    if (LFrontRead || RFrontRead) {
-        motors.forward(255);
-    }
-
-    if (LSideRead) {
-        motors.turnLeft(200);
-    }
-
-    if (RSideRead) {
-        motors.turnRight(200);
-    }
-}
-
-void States::fight(Motors &motors, LineSensors &line) {
-
-    if(line.rightLine()) { line.lineRight(motors); return; }
-    if(line.leftLine())  { line.lineLeft(motors);  return; }
-
-    if(digitalRead(LSensor) && digitalRead(RSensor)) {
-        rampForward(motors,255);
+    // ===== LINE SAFETY =====
+    if (RLine && LLine) {
+        line.lineRight(motors);
+        delay(250);
         return;
     }
-
-    if(digitalRead(Rside) && digitalRead(RSensor)) {
-        motors.rotateRight(240);
-        delay(90);
-        return;
-    }
-
-    if(digitalRead(Lside) && digitalRead(LSensor)) {
-        motors.rotateLeft(240);
-        delay(90);
-        return;
-    }
-
-    if(digitalRead(Rside)) {
-        motors.rotateRight(240);
-        delay(60);
-        return;
-    }
-
-    if(digitalRead(Lside)) {
-        motors.rotateLeft(240);
-        delay(60);
-        return;
-    }
-
-    if(digitalRead(RSensor)) {
-        motors.turnRight(240);
-        return;
-    }
-
-    if(digitalRead(LSensor)) {
-        motors.turnLeft(240);
-        return;
-    }
-
-    motors.forward(80); //90
-}
-
-void States::start(Motors &motors, LineSensors &line) {
-
-    if(digitalRead(StartMod))
-        matchStarted = true;
-
-    if(!matchStarted) {
-        motors.stop();
-        return;
-    }
-
-    if(line.rightLine()) { line.lineRight(motors); return; }
-    if(line.leftLine())  { line.lineLeft(motors);  return; }
-
-    if(digitalRead(LSensor) && digitalRead(RSensor)) {
-        rampForward(motors,255);
-        return;
-    }
-
-    if(digitalRead(Rside) && digitalRead(RSensor)) {
-        motors.rotateRight(240);
-        delay(90);
-        return;
-    }
-
-    if(digitalRead(Lside) && digitalRead(LSensor)) {
-        motors.rotateLeft(240);
-        delay(90);
-        return;
-    }
-
-    if(digitalRead(Rside)) {
-        motors.rotateRight(240);
-        delay(60);
-        return;
-    }
-
-    if(digitalRead(Lside)) {
-        motors.rotateLeft(240);
-        delay(60);
-        return;
-    }
-
-    if(digitalRead(RSensor)) {
-        motors.turnRight(240);
-        return;
-    }
-
-    if(digitalRead(LSensor)) {
-        motors.turnLeft(240);
-        return;
-    }
-
-    motors.forward(63);
-}
-
-void States::blindSearch(Motors &motors, LineSensors &line) {
-
-    if(!digitalRead(StartMod)) {
-        motors.stop();
-        return;
-    }
-
-    if(line.rightLine()) { line.lineRight(motors); return; }
-    if(line.leftLine())  { line.lineLeft(motors);  return; }
-
-    if(digitalRead(LSensor) && digitalRead(RSensor)) {
-        rampForward(motors,255);
-        return;
-    }
-
-    if(digitalRead(RSensor)) {
-        motors.rotateRight(220);
-        return;
-    }
-
-    if(digitalRead(LSensor)) {
-        motors.rotateLeft(220);
-        return;
-    }
-
-    if(digitalRead(Rside)) {
-        motors.rotateRight(220);
+    if(RLine) {
+        line.lineRight(motors);
         delay(250);
         return;
     }
 
-    if(digitalRead(Lside)) {
-        motors.rotateLeft(220);
-        delay(250);
+    if(LLine) {
+        line.lineLeft(motors);
+        delay(150);
         return;
     }
 
-    hexagonSearch(motors, line);
-}
 
+    // ===== ATTACK FRONT =====
+    if(LFrontRead && RFrontRead) {
+        rampForward(motors,255);
+        return;
+    }
+
+
+    // ===== FRONT ANGLE CORRECTION =====
+    if(RFrontRead) {
+        motors.turnRight(240);
+        return;
+    }
+
+    if(LFrontRead) {
+        motors.turnLeft(240);
+        return;
+    }
+
+
+    // ===== SIDE DETECTION =====
+    if(RSideRead && RFrontRead) {
+        motors.rotateRight(240);
+        delay(90);
+        return;
+    }
+
+    if(LSideRead && LFrontRead) {
+        motors.rotateLeft(240);
+        delay(90);
+        return;
+    }
+
+    if(RSideRead) {
+        //Implement juke then attack algorithm (tiki-tak)
+        motors.rotateRight(240);
+        delay(60);
+        return;
+    }
+
+    if(LSideRead) {
+        //Implement juke then attack algorithm (tiki-tak)
+        motors.rotateLeft(240);
+        delay(60);
+        return;
+    }
+
+    motors.forward(80);
+    // ===== BLIND SEARCH =====
+    //hexagonSearch(motors, line);
+}
 
 void States::hexagonSearch(Motors &motors, LineSensors &line) {
 
@@ -193,35 +104,11 @@ void States::hexagonSearch(Motors &motors, LineSensors &line) {
     }
 }
 
-// void States::hexagonSearch(Motors &motors) {
-
-//     if(hexState == HEX_FORWARD) {
-
-//         motors.forward(120);
-
-//         if(millis() - hexTimer > HEX_EDGE_TIME) {
-//             motors.stop();
-//             hexTimer = millis();
-//             hexState = HEX_TURN;
-//         }
-
-//     } else {
-
-//         motors.rotateRight(200);
-
-//         if(millis() - hexTimer > HEX_TURN_TIME) {
-//             motors.stop();
-//             hexTimer = millis();
-//             hexState = HEX_FORWARD;
-//         }
-//     }
-// }
-
 void States::rampForward(Motors &motors, double targetSpeed) {
 
     double step = targetSpeed / RAMP_STEPS;
 
-    for(int i=1;i<=RAMP_STEPS;i++) {
+    for(int i = 1; i <= RAMP_STEPS; i++) {
 
         motors.forward(step * i);
 

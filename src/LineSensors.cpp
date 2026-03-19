@@ -23,16 +23,31 @@ bool LineSensors::rightLine() {
 
 void LineSensors::lineRight(Motors &motors) {
     motors.back(140);
-    delay(180);
-    motors.rotateLeft(130);
     delay(100);
+    motors.rotateLeft(240);
+    delay(50);
     motors.stop();
+    // motors.back(140);
+    // delay(180);
+    // motors.rotateLeft(130);
+    // delay(100);
+    // motors.stop();
 }
 
 void LineSensors::lineLeft(Motors &motors) {
     motors.back(140);
-    delay(180);
-    motors.rotateLeft(120);
     delay(100);
+    motors.rotateRight(240);
+    delay(50);
     motors.stop();
+    // motors.back(140);
+    // delay(180);
+    // motors.rotateLeft(120);
+    // delay(100);
+    // motors.stop();
+}
+
+void LineSensors::lineBoth(Motors &motors) {
+    motors.back(180);
+    delay(110);
 }
