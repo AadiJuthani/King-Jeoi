@@ -58,10 +58,3 @@ void Motors::stop() {
     analogWrite(Lpos, 0);
     analogWrite(Lneg, 0);
 }
-
-void Motors::forwardRamp(int targetSpeed, int rampStep, int rampDelay) {
-    for(int s=0; s<=targetSpeed; s+=rampStep) {
-        forward(s);
-        delay(rampDelay);
-    }
-}

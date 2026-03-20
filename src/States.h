@@ -8,15 +8,6 @@ public:
 
     bool matchStarted = false;
 
-    enum HexState {
-        HEX_FORWARD,
-        HEX_TURN
-    };
-
-    HexState hexState = HEX_FORWARD;
-
-    unsigned long hexTimer = 0;
-
     void hexagonSearch(Motors &motors, LineSensors &line);
     void rampForward(Motors &motors, double targetSpeed);
 };

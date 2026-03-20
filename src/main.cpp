@@ -10,14 +10,6 @@ Motors motors;
 LineSensors line;
 States states;
 
-// Robot modes
-enum RunMode {
-    fightMode,
-    startMode,
-    stopMode,
-    blindMode
-};
-
 void setup() {
 
     Serial.begin(9600);
@@ -33,7 +25,7 @@ void setup() {
     while(!digitalRead(StartMod)) {}
 
     // Competition delay
-    delay(2000); //Make 5000
+    delay(5000);
 }
 
 void loop() {

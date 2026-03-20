@@ -11,5 +11,4 @@ public:
 
     void lineLeft(Motors &motors);
     void lineRight(Motors &motors);
-    void lineBoth(Motors &motors);
 };

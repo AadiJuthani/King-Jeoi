@@ -46,8 +46,3 @@ void LineSensors::lineLeft(Motors &motors) {
     // delay(100);
     // motors.stop();
 }
-
-void LineSensors::lineBoth(Motors &motors) {
-    motors.back(180);
-    delay(110);
-}

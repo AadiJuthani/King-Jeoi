@@ -2,11 +2,6 @@
 #include "Pins.h"
 #include <Arduino.h>
 
-#define HEX_EDGE_TIME  350
-#define HEX_TURN_TIME  200
-#define RAMP_STEPS     3
-#define RAMP_DELAY_MS  4
-
 void States::defaultState(Motors &motors, LineSensors &line,
                           int LSideRead, int RSideRead,
                           int LFrontRead, int RFrontRead,
@@ -84,13 +79,12 @@ void States::defaultState(Motors &motors, LineSensors &line,
 
 void States::hexagonSearch(Motors &motors, LineSensors &line) {
 
-    if(hexState == HEX_FORWARD) {
+    if(true) { //The condition will be something
 
         motors.forward(60);
 
         if(analogRead(LINE_LEFT) < 100 || analogRead(LINE_RIGHT) < 100) {
             motors.stop();
-            hexState = HEX_TURN;
         }
 
     } else {
@@ -99,19 +93,10 @@ void States::hexagonSearch(Motors &motors, LineSensors &line) {
 
         if(analogRead(LINE_LEFT) > 100 && analogRead(LINE_RIGHT) > 100) {
             motors.stop();
-            hexState = HEX_FORWARD;
         }
     }
 }
 
 void States::rampForward(Motors &motors, double targetSpeed) {
-
-    double step = targetSpeed / RAMP_STEPS;
-
-    for(int i = 1; i <= RAMP_STEPS; i++) {
-
-        motors.forward(step * i);
-
-        delay(RAMP_DELAY_MS);
-    }
+    motors.forward(targetSpeed);
 }

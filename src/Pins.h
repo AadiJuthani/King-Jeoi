@@ -19,9 +19,6 @@
 // Start module
 #define StartMod 10
 
-// Servo
-#define SERVO_PIN 9
-
 // DIP switches
 #define DIP1 A6
 #define DIP2 A7
