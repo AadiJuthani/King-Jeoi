@@ -14,6 +14,7 @@
 
 // Edge sensors
 #define LINE_LEFT A0
+#define LINE_RIGHT A1
 
 // Start module
 #define StartMod 10

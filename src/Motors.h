@@ -12,6 +12,4 @@ public:
     void turnRight(int speed);
     void turnLeft(int speed);
     void stop();
-
-    void forwardRamp(int targetSpeed, int rampStep, int rampDelay);
 };

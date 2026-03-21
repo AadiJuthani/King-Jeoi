@@ -2,6 +2,11 @@
 #include "Pins.h"
 #include <Arduino.h>
 
+// Time in ms for a full 360° rotation at speed 240 - tune this
+#define FULL_ROTATION_MS 1000UL // UL = unsigned long
+#define DEGREES_120_MS   (FULL_ROTATION_MS * 120UL / 360UL)
+#define DEGREES_40_MS    (FULL_ROTATION_MS * 40UL / 360UL)
+
 void States::defaultState(Motors &motors, LineSensors &line,
                           int LSideRead, int RSideRead,
                           int LFrontRead, int RFrontRead,
@@ -13,8 +18,6 @@ void States::defaultState(Motors &motors, LineSensors &line,
         return;
     }
 
-
-    // ===== FRONT ANGLE CORRECTION =====
     if(RFrontRead) {
         motors.turnRight(240);
         return;
@@ -25,17 +28,46 @@ void States::defaultState(Motors &motors, LineSensors &line,
         return;
     }
 
+
+    // ===== FRONT ANGLE CORRECTION =====
     if(RSideRead) {
-        //Implement juke then attack algorithm (tiki-tak)
+        // Break position: dart away, then hunt
         motors.rotateRight(240);
+        delay(DEGREES_40_MS);
+        
+        motors.forward(255);
+        unsigned long startTime = millis();
+        while(millis() - startTime < 150) {
+            if(line.leftLine() || line.rightLine()) break;
+        }
+        // Loop handles the rest - rotateRight continues until front IR fires
         return;
     }
 
     if(LSideRead) {
-        //Implement juke then attack algorithm (tiki-tak)
         motors.rotateLeft(240);
+        delay(DEGREES_40_MS);
+        
+        motors.forward(255);
+        unsigned long startTime = millis();
+        while(millis() - startTime < 150) {
+            if(line.leftLine() || line.rightLine()) break;
+        }
         return;
     }
+    
+    // Back-up simple code
+    // if(RSideRead) {
+    //     //Implement juke then attack algorithm (tiki-tak)
+    //     motors.rotateRight(240);
+    //     return;
+    // }
+
+    // if(LSideRead) {
+    //     //Implement juke then attack algorithm (tiki-tak)
+    //     motors.rotateLeft(240);
+    //     return;
+    // }
 
         // ===== LINE SAFETY =====
     if (RLine && LLine) {
@@ -61,7 +93,7 @@ void States::defaultState(Motors &motors, LineSensors &line,
 void States::hexagonSearch(Motors &motors, LineSensors &line) {
     if(line.leftLine() || line.rightLine()) {
         motors.rotateRight(200);
-        delay(300); // tuned to ~120°
+        delay(DEGREES_120_MS);
         return;
     }
     motors.forward(60);
