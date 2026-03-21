@@ -2,7 +2,7 @@
 #include "Pins.h"
 
 // ===== MOTOR TRIM =====
-// Adjust these to compensate for physical motor differences
+// Adjust these to compensate for the physical motor differences
 #define RPOS_TRIM  0
 #define RNEG_TRIM  0
 #define LPOS_TRIM  20

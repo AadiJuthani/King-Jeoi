@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 // Time in ms for a full 360° rotation at speed 240 - tune this
-#define FULL_ROTATION_MS 1000UL // UL = unsigned long
+#define FULL_ROTATION_MS 1000UL // UL = unsigned long, keep this in.
 #define DEGREES_120_MS   (FULL_ROTATION_MS * 120UL / 360UL)
 #define DEGREES_40_MS    (FULL_ROTATION_MS * 40UL / 360UL)
 
